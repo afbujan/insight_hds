@@ -17,10 +17,10 @@ def get_tfidf(X):
 	- tfidf_list, list
 		list of tf-idf vectors
     """
-	count_vect = CountVectorizer()
-	tfidf_transformer = TfidfTransformer()
+    count_vect = CountVectorizer()
+    tfidf_transformer = TfidfTransformer()
     tfidf_list = tfidf_transformer.fit_transform(count_vect.fit_transform(X))
-	return tfidf_list
+    return tfidf_list
 
 def scrape_comments(subreddit_list,tfidf=True,verbose=True):
     """This function scrapes comments from different subreddits
@@ -41,16 +41,16 @@ def scrape_comments(subreddit_list,tfidf=True,verbose=True):
     X = []
     y = []
     for i, subreddit in enumerate(subreddit_list):
-		comments = r.get_subreddit(subreddit).get_comments(limit=None)
-		count=0
-		for c in comments:
-			X.append(c.body) 
-			y.append(i+1)
-			count+=1
+        comments = r.get_subreddit(subreddit).get_comments(limit=None)
+        count=0
+        for c in comments:
+   	    X.append(c.body) 
+	    y.append(i+1)
+	    count+=1
 	if verbose:
-		print '\n%i comments from subreddit: %s fetched!'%(count,subreddit)
-	y = np.array(labels).astype('int')
-	if tfidf:
-		get_tfidf(X)	
-	return X, y
+            print '\n%i comments from subreddit: %s fetched!'%(count,subreddit)
+    y = np.array(y).astype('int')
+    if tfidf:
+        X = get_tfidf(X)	
+    return X, y
 
