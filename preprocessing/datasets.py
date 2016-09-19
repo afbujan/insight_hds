@@ -3,10 +3,22 @@ import numpy as np
 import praw
 from bs4 import BeautifulSoup
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import TfidfTransformer,TfidfVectorizer
 
 
-def get_tfidf(X):
+
+
+
+def get_tf(X, with_names=True,**kwargs):
+    tf_vec = CountVectorizer(**kwargs)
+    tf_vec.fit(X)
+    if with_names:
+        return tf_vec.transform(X), tf_vec.get_feature_names()
+    else:
+        return tf_vec.transform(X)
+
+
+def get_tfidf(X, with_names=True,**kwargs):
     """ Transforms a list of texts into a list of tf-idf vectors
 	Parameters:
 	----------
@@ -17,12 +29,15 @@ def get_tfidf(X):
 	- tfidf_list, list
 		list of tf-idf vectors
     """
-    count_vect = CountVectorizer()
-    tfidf_transformer = TfidfTransformer()
-    tfidf_list = tfidf_transformer.fit_transform(count_vect.fit_transform(X))
-    return tfidf_list
+    tfidf_vec = TfidfVectorizer(**kwargs)
+    tfidf_vec.fit(X)
+    if with_names:
+        return tfidf_vec.transform(X), tfidf_vec.get_feature_names()
+    else:
+        return tfidf_tra.transform(X)
 
-def scrape_comments(subreddit_list,tfidf=True,verbose=True):
+
+def scrape_comments(subreddit_list,verbose=True):
     """This function scrapes comments from different subreddits
 
     Parameters:
@@ -49,8 +64,4 @@ def scrape_comments(subreddit_list,tfidf=True,verbose=True):
 	    count+=1
 	if verbose:
             print '\n%i comments from subreddit: %s fetched!'%(count,subreddit)
-    y = np.array(y).astype('int')
-    if tfidf:
-        X = get_tfidf(X)	
-    return X, y
-
+    return X, np.array(y).astype('int')
